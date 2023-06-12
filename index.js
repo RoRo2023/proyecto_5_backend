@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000; // regularmente se usa el puerto 3000
 
 // config para recibir info
 app.use(express.json()) // nos permite que nuestra peticion post reciba informacion desde el body
-app.use(cors({ origin: '*' }));
+app.use(cors());
 
 // Con Promise se puede trabajar con then y con catch
 mongoose.connect(process.env.HOSTDB).then(() => {

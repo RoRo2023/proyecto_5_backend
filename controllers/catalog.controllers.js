@@ -1,28 +1,33 @@
 const catalogmodels = require('../models/catalog.models');
 
 // GET ( obtener )
-/*
-const getCatalog = async (req, res) => {
 
-    const tablets = await catalogmodels.find(); // find = obtener todo
-
-    res
-        .status(200) // 200 = OK
-        .json({
-            tablets: tablets
-        })
-        .send()
-
-}
-*/
 const getCatalog = async (req, res) => {
     try{
-    const tablets = await catalogmodels.find(); // find = obtener todo
+    const videojuegos = await catalogmodels.find(); // find = obtener todo
+    return res
+        .status(200) // 200 = OK
+        .json({
+            catalogo: videojuegos
+        })
+        //.send()
+    }catch(error){
+        console.log(error);
+        return res
+        .status(500) 
+        //.send()
+    }
+}
+
+/*
+const getCatalog = async (req, res) => {
+    try{
+    const catalogo = await catalogmodels.find(); // find = obtener todo
 
     res
         .status(200) // 200 = OK
         .json({
-            tablets: tablets
+            catalogo: catalogo
         })
         .send()
     }catch(error){
@@ -33,15 +38,15 @@ const getCatalog = async (req, res) => {
         .send()
     }
 }
-
+*/
 // POST ( crear )
 const createCatalog = async (req, res) => {
-    const { nombre, precio, marca, SO, imagen } = req.body;
+    const { nombre, precio, clasificacion, consola, imagen } = req.body;
     const catalog = new catalogmodels({
         nombre: nombre,
         precio: precio,
-        marca: marca, 
-        SO: SO,
+        clasificacion: clasificacion, 
+        consola: consola,
         imagen: imagen
     })
 
@@ -52,7 +57,7 @@ const createCatalog = async (req, res) => {
         .json({
             message: 'Artículo añadido'
         })
-        .send()
+        //.send()
 
 }
 
@@ -60,13 +65,13 @@ const createCatalog = async (req, res) => {
 const catalogUpdate = async (req, res) => {
 
     const { id } = req.params;
-    const { nombre, precio, marca, SO, imagen } = req.body;
+    const { nombre, precio, clasificacion, consola, imagen } = req.body;
 
     await catalogmodels.findByIdAndUpdate(id, {
         nombre: nombre,
         precio: precio,
-        marca: marca, 
-        SO: SO,
+        clasificacion: clasificacion, 
+        consola: consola,
         imagen: imagen
     });
 
@@ -75,7 +80,7 @@ const catalogUpdate = async (req, res) => {
         .json({
             message: 'Actualizado correctamente'
         })
-        .send()
+        //.send()
 
 }
 
@@ -91,7 +96,7 @@ const catalogDelete = async (req, res) => {
         .json({
             message: 'Eliminado correctamente'
         })
-        .send()
+        //.send()
 
 }
 

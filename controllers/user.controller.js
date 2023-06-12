@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
         .json({
             users: users
         })
-        .send()
+        //.send()
 
 }
 
@@ -23,6 +23,18 @@ const createUser = async (req, res) => {
     const { email, name, password, age } = req.body;
 
     console.log(req.body);
+
+    const isUser = await userModel.findOne({email:email})
+    if(isUser){
+        return(
+          res
+            .status(400) 
+            .json({
+                message: 'Usuario ya existe'
+            })
+            //.send()  
+        )
+    }
 
     const hash = bcrypt.hashSync(password, 10);
 
@@ -40,7 +52,7 @@ const createUser = async (req, res) => {
         .json({
             message: 'Usuario creado'
         })
-        .send()
+        //.send()
 
 }
 
@@ -62,7 +74,7 @@ const userUpdate = async (req, res) => {
         .json({
             message: 'Actualizado correctamente'
         })
-        .send()
+        //.send()
 
 }
 
@@ -78,7 +90,7 @@ const userDelete = async (req, res) => {
         .json({
             message: 'Eliminado correctamente'
         })
-        .send()
+        //.send()
 
 }
 
@@ -86,48 +98,56 @@ const userDelete = async (req, res) => {
 const login = async (req, res) => {
 
     console.log("attempting login...")
-
     const { email, password } = req.body;
+    try{
+        const user = await userModel.findOne({ email: email});
+        console.log(user)
+        if (!user) {
+            return res
+                    .status(404)
+                    .json({
+                        message: 'Usuario no encontrado'+ email
+                    })
+                    //.send()
+        }
 
-    const user = await userModel.findOne({ email: email});
+        console.log(password, user.password);
 
-    if (!user) {
-        return res
-                .status(404)
-                .json({
-                    message: 'Usuario no encontrado'+ email
-                })
-                .send()
+        const isMatch = bcrypt.compareSync(password, user.password);
+        console.log(isMatch);
+
+
+        if (isMatch) {
+            const token = generateJWT(user._id);
+            return res
+                    .status(200)
+                    .json({
+                        message: 'Usuario logeado correctamente',
+                        user: {
+                            user: user.name,
+                            password: user.password,
+                            age: user.age,
+                            email: user.email
+                        },
+                        token: token
+                    })
+                    //.send()
+        } else {
+            return res
+                    .status(401)
+                    .json({
+                    message: 'Usuario incorrecto:'+ email +' '+user.email
+                    })
+                    //.send()
+                    
+        }
+    }catch(error){
+        return res 
+            .status(500
+            .send())
     }
 
-    console.log(password, user.password);
-
-    const isMatch = bcrypt.compareSync(password, user.password);
-    console.log(isMatch);
-
-
-    if (isMatch) {
-        const token = generateJWT(user._id);
-        return res
-                .status(200)
-                .json({
-                    message: 'Usuario logeado correctamente',
-                    user: {
-                        age: user.age,
-                        email: user.email
-                    },
-                    token: token
-                })
-                .send()
-    } else {
-        return res
-                .status(401)
-                .json({
-                   message: 'Usuario incorrecto:'+ email +' '+user.email
-                })
-                .send()
-                
-    }
+    
 
 }
 
