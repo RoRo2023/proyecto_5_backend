@@ -19,90 +19,27 @@ const getCatalog = async (req, res) => {
     }
 }
 
-/*
-const getCatalog = async (req, res) => {
+const getCatalogID = async (req, res) => {
     try{
-    const catalogo = await catalogmodels.find(); // find = obtener todo
+    const { id } = req.params;
 
-    res
-        .status(200) // 200 = OK
+    const catalogo = await catalogmodels.findById(id);
+
+    return res
+        .status(200)
         .json({
             catalogo: catalogo
         })
-        .send()
+        //.send()
     }catch(error){
         console.log(error);
-
-        res
+        return res
         .status(500) 
-        .send()
+        //.send()
     }
-}
-*/
-// POST ( crear )
-const createCatalog = async (req, res) => {
-    const { nombre, precio, clasificacion, consola, imagen } = req.body;
-    const catalog = new catalogmodels({
-        nombre: nombre,
-        precio: precio,
-        clasificacion: clasificacion, 
-        consola: consola,
-        imagen: imagen
-    })
-
-    await catalog.save()
-
-    res
-        .status(201) // 201 = Create
-        .json({
-            message: 'Artículo añadido'
-        })
-        //.send()
-
-}
-
-// PUT ( actualizar )
-const catalogUpdate = async (req, res) => {
-
-    const { id } = req.params;
-    const { nombre, precio, clasificacion, consola, imagen } = req.body;
-
-    await catalogmodels.findByIdAndUpdate(id, {
-        nombre: nombre,
-        precio: precio,
-        clasificacion: clasificacion, 
-        consola: consola,
-        imagen: imagen
-    });
-
-    res
-        .status(200)
-        .json({
-            message: 'Actualizado correctamente'
-        })
-        //.send()
-
-}
-
-// DELETE ( eliminar )
-const catalogDelete = async (req, res) => {
-
-    const { id } = req.params;
-
-    await catalogmodels.findByIdAndDelete(id);
-
-    res
-        .status(200)
-        .json({
-            message: 'Eliminado correctamente'
-        })
-        //.send()
-
 }
 
 module.exports = {
     getCatalog,
-    createCatalog,
-    catalogDelete,
-    catalogUpdate
+    getCatalogID
 }
